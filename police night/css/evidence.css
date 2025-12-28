@@ -1,0 +1,55 @@
+/* 证物收集区域 */
+.evidence-panel {
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #e8e8e8;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.evidence-list {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.evidence-item {
+    padding: 15px;
+    margin-bottom: 12px;
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.evidence-item:hover {
+    border-color: #1890ff;
+    background: #f0f7ff;
+}
+
+.evidence-name {
+    font-size: 14px;
+    color: #262626;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.evidence-desc {
+    font-size: 13px;
+    color: #595959;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.evidence-time {
+    font-size: 12px;
+    color: #8c8c8c;
+}
+
+.evidence-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8c8c8c;
+    font-size: 14px;
+}

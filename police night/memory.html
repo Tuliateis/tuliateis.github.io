@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记忆回放</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="flash-overlay" id="flashOverlay"></div>
+    <div class="reset-message" id="resetMessage">理智值清空，记忆已重新修正</div>
+    
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="height: 100%;"></div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="search-container">
+                <h2 class="search-title">记忆碎片搜索</h2>
+                <div class="search-box-container">
+                    <input type="text" class="search-box" id="searchInput" placeholder="输入关键词..." onkeypress="handleKeyPress(event)">
+                    <button class="search-button" onclick="searchMemory()">搜索</button>
+                </div>
+            </div>
+            
+            <div class="result-container">
+                <div class="result-content" id="resultContent">请输入关键词搜索记忆碎片...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

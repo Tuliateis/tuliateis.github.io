@@ -1,0 +1,64 @@
+<div class="main-system">
+    <!-- 顶部标题栏 -->
+    <div class="header">
+        <div class="header-title">A市公安局北江东分局警务平台</div>
+        <div class="interface-indicator">界面1/30</div>
+    </div>
+    
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <!-- 左侧菜单栏 -->
+        <div class="left-menu">
+            <div class="menu-item active" data-tab="personnel">人员资料管理</div>
+            <div class="menu-item" data-tab="traffic">交通信息管理</div>
+            <div class="menu-item" data-tab="cases">过往案件资料管理</div>
+        </div>
+        
+        <!-- 中间内容区 -->
+        <div class="center-content">
+            <div id="tab-content"></div>
+        </div>
+        
+        <!-- 右侧内容区 -->
+        <div class="right-content">
+            <!-- 右侧标签容器 -->
+            <div class="right-tab-container">
+                <!-- 右侧标签栏 -->
+                <div class="right-tab-header">
+                    <div class="right-tab-item active" data-tab="dialogue">询问记录</div>
+                    <div class="right-tab-item" data-tab="evidence">证物收集</div>
+                </div>
+                
+                <!-- 右侧标签内容区域 -->
+                <div class="right-tab-content">
+                    <!-- 询问记录 -->
+                    <div class="right-tab active" id="dialogue-tab">
+                        <div class="dialogue-panel">
+                            <div class="dialogue-content" id="dialogue-content">
+                                <!-- 对话内容将动态添加 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 证物收集 -->
+                    <div class="right-tab" id="evidence-tab">
+                        <div class="evidence-panel">
+                            <div class="evidence-list">
+                                <div class="evidence-item">
+                                    <div class="evidence-name">行车记录仪存储卡</div>
+                                    <div class="evidence-desc">涉事轿车的行车记录仪存储卡，可供查看刚才的行车记录</div>
+                                </div>
+                                <div class="evidence-item">
+                                    <div class="evidence-name">摩托车车主背包</div>
+                                    <div class="evidence-desc">现场遗落的摩托车车主背包，里面有一些东西</div>
+                   
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

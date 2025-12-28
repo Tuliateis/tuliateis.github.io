@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高档的手机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* 灰色提示框 - 只在密码输入前显示 */
+        .hint-box {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .hint-box.hidden {
+            display: none;
+        }
+        
+        .hint-box .hint-name {
+            color: #0066cc;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        /* 手机容器 */
+        .phone-wrapper {
+            width: 400px;
+            height: 600px;
+            position: relative;
+        }
+        
+        .phone-container {
+            width: 100%;
+            height: 100%;
+            background: #222;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 8px solid #111;
+        }
+        
+        /* 手机屏幕 */
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            position: relative;
+            cursor: pointer;
+            z-index: 1;
+        }
+        
+        .phone-screen.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* 所有界面共用样式 */
+        .screen-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 2;
+        }
+        
+        .notification-screen {
+            color: white;
+            padding: 20px;
+        }
+        
+        .password-screen {
+            background: #111;
+            color: white;
+            padding: 30px;
+        }
+        
+        .desktop-screen {
+            background: #0a0a0a;
+            color: white;
+        }
+        
+        .message-screen {
+            background: #0a0a0a;
+            color: white;
+        }
+        
+        .status-bar {
+            height: 25px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 12px;
+            color: #fff;
+        }
+        
+        .notification-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .notification-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .notification-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+        }
+        
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ff6b6b;
+        }
+        
+        .notification-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .password-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .password-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .password-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #666;
+            transition: all 0.3s;
+        }
+        
+        .password-dot.filled {
+            background: #4a6fd8;
+            border-color: #4a6fd8;
+        }
+        
+        /* 数字键盘 */
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .num-btn[data-num="0"] {
+            grid-column: 2;
+        }
+        
+        .num-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .num-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .del-btn {
+            background: rgba(255, 99, 99, 0.2);
+        }
+        
+        /* 桌面图标 */
+        .desktop-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100% - 50px);
+            gap: 40px;
+        }
+        
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .app-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+        
+        .icon-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        .hint-text {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            z-index: 3;
+        }
+        
+        .error-message {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 10px;
+            height: 20px;
+        }
+        
+        .swipe-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        
+        .active-layer {
+            display: block !important;
+        }
+        
+        /* 信息界面样式 */
+        .message-header {
+            height: 50px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .back-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            color: #4a6fd8;
+        }
+        
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* 联系人列表 */
+        .conversation-list {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+        }
+        
+        .conversation-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .conversation-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .contact-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #4a6fd8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 500;
+            margin-right: 12px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .contact-preview {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* 消息列表 */
+        .message-list {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        /* 消息气泡样式 */
+        .message-date {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            margin: 20px 0 10px;
+        }
+        
+        .message-bubble {
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        
+        .message-right {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .message-left {
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .bubble-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .bubble-right {
+            background: #4a6fd8;
+            color: white;
+            border-top-right-radius: 4px;
+        }
+        
+        .bubble-left {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-top-left-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 灰色提示框 - 只在密码输入前显示 -->
+    <div class="hint-box" id="hintBox">
+        <div class="hint-name">秦数：</div>
+        这好像不是摩托车车主的手机。
+    </div>
+    <div class="phone-wrapper">
+        <div class="phone-container">
+            <div class="phone-screen" id="phoneScreen">
+                <!-- 点击屏幕提示 -->
+                <div class="hint-text" id="clickHint">点击屏幕点亮</div>
+                
+                <!-- 通知界面 -->
+                <div class="screen-layer notification-screen" id="notificationScreen">
+                    <div class="status-bar">
+                        <div>01:24</div>
+                        <div>无网络连接</div>
+                    </div>
+                    
+                    <div class="notification-card" id="notificationCard">
+                        <div class="notification-time">刚刚</div>
+                        <div class="notification-title">🆔 系统通知</div>
+                        <div class="notification-content">请输入密码解锁手机</div>
+                    </div>
+                    
+                    <div class="swipe-hint" id="swipeHint">点击通知解锁</div>
+                </div>
+                
+                <!-- 密码界面 -->
+                <div class="screen-layer password-screen" id="passwordScreen">
+                    <div class="password-title">请输入解锁密码</div>
+                    
+                    <!-- 密码点 -->
+                    <div class="password-dots">
+                        <div class="password-dot" id="dot1"></div>
+                        <div class="password-dot" id="dot2"></div>
+                        <div class="password-dot" id="dot3"></div>
+                        <div class="password-dot" id="dot4"></div>
+                        <div class="password-dot" id="dot5"></div>
+                        <div class="password-dot" id="dot6"></div>
+                    </div>
+                    
+                    <!-- 错误提示 -->
+                    <div class="error-message" id="errorMsg"></div>
+                    
+                    <!-- 数字键盘 -->
+                    <div class="numpad">
+                        <button class="num-btn" data-num="1">1</button>
+                        <button class="num-btn" data-num="2">2</button>
+                        <button class="num-btn" data-num="3">3</button>
+                        <button class="num-btn" data-num="4">4</button>
+                        <button class="num-btn" data-num="5">5</button>
+                        <button class="num-btn" data-num="6">6</button>
+                        <button class="num-btn" data-num="7">7</button>
+                        <button class="num-btn" data-num="8">8</button>
+                        <button class="num-btn" data-num="9">9</button>
+                        <button class="num-btn" data-num="0">0</button>
+                        <button class="num-btn del-btn" id="delBtn">⌫</button>
+                    </div>
+                </div>
+                
+                <!-- 桌面界面 -->
+                <div class="screen-layer desktop-screen" id="desktopScreen">
+                    <div class="status-bar">
+                        <div>01:24</div>
+                        <div>无网络连接</div>
+                    </div>
+                    
+                    <!-- 只有一个信息应用 -->
+                    <div class="desktop-icons">
+                        <div class="app-icon" onclick="showMessageApp()">
+                            <div style="font-size: 40px;">💬</div>
+                            <div class="icon-text">信息</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 信息界面 -->
+                <div class="screen-layer message-screen" id="messageScreen"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 状态管理
+        let currentState = 'black';
+        let password = '';
+        const correctPassword = '800602'; // 赵永贵的生日
+
+         // 获取提示框元素
+        const hintBox = document.getElementById('hintBox');
+        
+        // 获取元素
+        const phoneScreen = document.getElementById('phoneScreen');
+        const clickHint = document.getElementById('clickHint');
+        const notificationScreen = document.getElementById('notificationScreen');
+        const passwordScreen = document.getElementById('passwordScreen');
+        const desktopScreen = document.getElementById('desktopScreen');
+        const messageScreen = document.getElementById('messageScreen');
+        const notificationCard = document.getElementById('notificationCard');
+        const errorMsg = document.getElementById('errorMsg');
+        const dots = [
+            document.getElementById('dot1'),
+            document.getElementById('dot2'),
+            document.getElementById('dot3'),
+            document.getElementById('dot4'),
+            document.getElementById('dot5'),
+            document.getElementById('dot6')
+        ];
+        
+        // 初始化
+        function initPhone() {
+            currentState = 'black';
+            phoneScreen.classList.remove('active');
+            notificationScreen.classList.remove('active-layer');
+            passwordScreen.classList.remove('active-layer');
+            desktopScreen.classList.remove('active-layer');
+            messageScreen.classList.remove('active-layer');
+            clickHint.style.display = 'block';
+        }
+        
+        // 点击手机屏幕
+        phoneScreen.addEventListener('click', function(e) {
+            if (currentState === 'black') {
+                currentState = 'notification';
+                phoneScreen.classList.add('active');
+                notificationScreen.classList.add('active-layer');
+                clickHint.style.display = 'none';
+            }
+        });
+        
+        // 点击通知卡片
+        notificationCard.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showPasswordScreen();
+        });
+        
+        // 显示密码界面
+        function showPasswordScreen() {
+            if (currentState === 'notification') {
+                currentState = 'password';
+                notificationScreen.classList.remove('active-layer');
+                passwordScreen.classList.add('active-layer');
+                password = '';
+                updatePasswordDots();
+                clearError();
+            }
+        }
+        
+        // 更新密码点
+        function updatePasswordDots() {
+            dots.forEach((dot, index) => {
+                if (index < password.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+        
+        // 清除错误
+        function clearError() {
+            errorMsg.textContent = '';
+        }
+        
+        // 数字按钮点击
+        document.querySelectorAll('.num-btn[data-num]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                if (currentState === 'password' && password.length < 6) {
+                    password += this.getAttribute('data-num');
+                    updatePasswordDots();
+                    clearError();
+                    
+                    if (password.length === 6) {
+                        checkPassword();
+                    }
+                }
+            });
+        });
+        
+        // 删除按钮
+        document.getElementById('delBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (currentState === 'password' && password.length > 0) {
+                password = password.slice(0, -1);
+                updatePasswordDots();
+                clearError();
+            }
+        });
+        
+        // 检查密码
+        function checkPassword() {
+            if (password === correctPassword) {
+                // 密码正确
+                setTimeout(() => {
+                    currentState = 'desktop';
+                    passwordScreen.classList.remove('active-layer');
+                    desktopScreen.classList.add('active-layer');
+                }, 300);
+            } else {
+                // 密码错误
+                errorMsg.textContent = '密码错误';
+                setTimeout(() => {
+                    password = '';
+                    updatePasswordDots();
+                    clearError();
+                }, 1000);
+            }
+        }
+        
+        // 键盘支持
+        document.addEventListener('keydown', function(e) {
+            if (currentState === 'password') {
+                if (e.key >= '0' && e.key <= '9' && password.length < 6) {
+                    password += e.key;
+                    updatePasswordDots();
+                    clearError();
+                    
+                    if (password.length === 6) {
+                        checkPassword();
+                    }
+                } else if (e.key === 'Backspace' && password.length > 0) {
+                    password = password.slice(0, -1);
+                    updatePasswordDots();
+                    clearError();
+                }
+            }
+        });
+
+        // 在checkPassword函数中确保隐藏提示框
+        function checkPassword() {
+            if (password === correctPassword) {
+                // 密码正确，隐藏提示框
+                if (hintBox) {
+                    hintBox.classList.add('hidden');
+                }
+                
+                // 进入桌面
+                setTimeout(() => {
+                    currentState = 'desktop';
+                    passwordScreen.classList.remove('active-layer');
+                    desktopScreen.classList.add('active-layer');
+                }, 300);
+            } else {
+                // 密码错误
+                errorMsg.textContent = '密码错误';
+                setTimeout(() => {
+                    password = '';
+                    updatePasswordDots();
+                    clearError();
+                }, 1000);
+            }
+        }
+        
+        
+        // 信息应用
+        function showMessageApp() {
+            currentState = 'message';
+            desktopScreen.classList.remove('active-layer');
+            messageScreen.classList.add('active-layer');
+            showConversationList();
+        }
+        
+        // 显示联系人列表
+        function showConversationList() {
+            messageScreen.innerHTML = `
+                <div class="message-header">
+                    <div class="back-btn" onclick="backToDesktop()">←</div>
+                    <div class="header-title">信息</div>
+                </div>
+                <div class="conversation-list" id="conversationList">
+                    <div class="conversation-item" onclick="showContactMessages('孙副局')">
+                        <div class="contact-avatar">孙</div>
+                        <div class="contact-info">
+                            <div class="contact-name">孙副局</div>
+                            <div class="contact-preview">我听说副局您爱喝茶叶...</div>
+                        </div>
+                    </div>
+                
+                
+                    <div class="conversation-item" onclick="showContactMessages('周秘书')">
+                        <div class="contact-avatar">周</div>
+                        <div class="contact-info">
+                            <div class="contact-name">周秘书</div>
+                            <div class="contact-preview">这是拟好的合同您看一下</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 根据联系人获取消息
+        function getMessagesByContact(contactName) {
+            if (contactName === '孙副局') {
+                return [
+                    {
+                        date: "7/3",
+                        contact: "孙副局",
+                        conversations: [
+                            { sender: "right", text: "我听说副局您爱喝茶叶，特地找人给您带了最好的碧螺春，您看您有没有时间，咱们约着吃个饭？" },
+                            { sender: "left", text: "呵呵好，我后天晚上有空。" },
+                            { sender: "right", text: "好嘞，饭店我来定" }
+                        ]
+                    },
+                    {
+                        date: "7/14",
+                        contact: "孙副局",
+                        conversations: [
+                            { sender: "right", text: "副局，我收到您上次说喜欢的那套鎏金银纹茶具，您看您最近方不方便，咱们一起吃个饭？" },
+                            { sender: "left", text: "也行，小赵有心了，我让秘书联系你。" },
+                            { sender: "right", text: "谢谢副局，我来定饭店。" }
+                        ]
+                    },
+                    {
+                        date: "7/16",
+                        contact: "孙副局",
+                        conversations: [
+                            { sender: "right", text: "副局，您看我上次说的那个岐山的项目...." },
+                            { sender: "left", text: "小赵啊，项目是好项目，局里当然是支持各种文旅活动百花齐放的，就是后期的资源这方面...." },
+                            { sender: "right", text: "懂，副局，特别懂，下次给您带几瓶上好的茅苔，都是精品的礼盒装！您别嫌少就行" }
+                        ]
+                    },
+                    {
+                        date: "7/23",
+                        contact: "孙副局",
+                        conversations: [
+                            { sender: "left", text: "赵永贵，看看你干的好事！人举报信都递到我这里了，你的项目不是告诉我没问题吗？" },
+                            { sender: "right", text: "副局您听我解释，项目...项目的事我马上让他们整改，我也没想到他们竟然背着我这么乱来，都是我的疏忽，副局您给我一段时间，我马上去处理！" },
+                            
+                        ]
+                    },
+                    {
+                        date: "7/26",
+                        contact: "孙副局",
+                        conversations: [
+                            { sender: "right", text: "副局我已经狠狠批评了项目监管，造成的破坏也在修复中了。您放心，等项目成了，赚得的收益少不了您的一份，请您辛苦帮忙一次，您出马肯定什么事都不在话下了" },
+                            { sender: "left", text: "小赵，我答应帮你是看重你的能力，如果你办错了事或者没有达到我的预期，后面你自然知道是怎么回事.." },
+                            { sender: "right", text: "明白明白，副局的教导我都记在心里，时刻不敢忘" },
+                            { sender:"left",text:"你要找的那个人，我这次替你摆平了，没有下一次"},
+                            { sender:"right",text:"感谢副局，等您方便了我去看望您！"}
+                        ]
+                    },
+                ];
+            
+            } else if (contactName === '周秘书') {
+                return [
+                    {
+                        date: "7/16",
+                        contact: "周秘书",
+                        conversations: [
+                            { sender: "left", text: "老板，这是您要的合同，您过目一下（附：xx建筑有限公司岐山西侧建设用地使用权出让开发合同）" },
+                            {sender:"right",text:"已接收"}
+                        ]
+                    },
+                    {
+                        date: "7/23",
+                        contact: "周秘书",
+                        conversations: [
+                            { sender: "right", text: "全都是废物！被人发现了都不知道，施工地那边在瞎搞什么，让那个监理立刻过来见我，马上停工！" },
+                            {sender:"left",text:"对不起老板，我马上去处理"},
+                            {sender:"right",text:"要是惹出了事收不了尾，我让你们吃不了兜着走！"},
+                            {sender:"left",text:"对不起老板，我马上去查"}
+                        ]
+                    },
+                    {
+                        date:"......",
+                        contact: "周秘书",
+                        conversations: []  // 注意：这里需要一个conversations数组，即使为空
+                    
+                    },
+                    {
+                        date: "8/23",
+                        contact: "周秘书",
+                        conversations: [
+                            { sender: "right", text: "帮我把上午的会推迟，我去项目组巡视一下" },
+                            {sender:"left",text:"好的老板"}
+                        ]
+                    }
+                ];
+            }
+            return [];
+        }
+        
+        // 显示具体联系人的消息
+        function showContactMessages(contactName) {
+            const messages = getMessagesByContact(contactName);
+            
+            messageScreen.innerHTML = `
+                <div class="message-header">
+                    <div class="back-btn" onclick="showConversationList()">←</div>
+                    <div class="header-title">${contactName}</div>
+                </div>
+                <div class="message-list" id="messageList">
+                    ${messages.map(message => `
+                        <div class="message-date">${message.date}</div>
+                        ${message.conversations.map(conv => `
+                            <div class="message-bubble message-${conv.sender}">
+                                <div class="bubble-content bubble-${conv.sender}">
+                                    ${conv.text}
+                                </div>
+                            </div>
+                        `).join('')}
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // 返回桌面
+        function backToDesktop() {
+            currentState = 'desktop';
+            messageScreen.classList.remove('active-layer');
+            desktopScreen.classList.add('active-layer');
+        }
+        
+        // 初始化
+        initPhone();
+    </script>
+</body>
+</html>

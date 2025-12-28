@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行车记录仪内容</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* 右上角2/30标识 */
+        .page-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(74, 111, 216, 0.1);
+            color: #4a6fd8;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        /* 行车记录仪内容区域 */
+        .memory-card-content {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        /* 证据编号 */
+        .evidence-id {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 10px;
+        }
+        
+        /* 灰色框样式 */
+        .comment-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .back-btn {
+            display: block;
+            width: 100px;
+            margin: 20px auto 0;
+            padding: 10px;
+            text-align: center;
+            background: #4a6fd8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .back-btn:hover {
+            background: #3a5ec8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 右上角2/30标识 -->
+        <div class="page-indicator">2/30</div>
+        
+        <h1>行车记录仪存储卡内容</h1>
+        
+    
+        </div>
+        
+        <div class="memory-card-content">
+            行车记录仪显示：行至转弯处轿车车速未提前降速，摩托车司机也没有预先鸣笛示警，跨线转弯反应不及撞上轿车左前侧车盖后倒地消失在记录范围，轿车刹车停下后，驾驶员下车查看并拨打110和120，无其他反应直到警官秦数到达。
+        </div>
+        
+        <!-- 灰色框内容 -->
+        <div class="comment-box">
+            秦数：突然出现的毫无预警的摩托车吗？
+        </div>
+        
+        <button class="back-btn" onclick="window.close()">关闭</button>
+    </div>
+</body>
+</html>

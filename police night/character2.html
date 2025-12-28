@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查询到"李林峰的基本资料如下</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* 右上角3/30标识 */
+        .page-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(74, 111, 216, 0.1);
+            color: #4a6fd8;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            width: 120px;
+        }
+        
+        /* 灰色框样式 */
+        .comment-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .back-btn {
+            display: block;
+            width: 100px;
+            margin: 20px auto 0;
+            padding: 10px;
+            text-align: center;
+            background: #4a6fd8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .back-btn:hover {
+            background: #3a5ec8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 右上角3/30标识 -->
+        <div class="page-indicator">3/30</div>
+        
+        <h1>查询到"李林峰"的基本资料如下</h1>
+        
+        <table>
+            <tr>
+                <th>姓名</th>
+                <td>李林峰</td>
+            </tr>
+            <tr>
+                <th>曾用名</th>
+                <td>李海</td>
+            </tr>
+            <tr>
+                <th>出生日期</th>
+                <td>1990.6.23</td>
+            </tr>
+            <tr>
+                <th>性别</th>
+                <td>男</td>
+            </tr>
+            <tr>
+                <th>身份证号</th>
+                <td>231xxxxxxxx</td>
+            </tr>
+            <tr>
+                <th>联系电话</th>
+                <td>13861xxxx92</td>
+            </tr>
+            <tr>
+                <th>工作单位及职务</th>
+                <td>B市xx公司金融会计师</td>
+            </tr>
+            <tr>
+                <th>户籍地址</th>
+                <td>A市xx区xxxx</td>
+            </tr>
+            <tr>
+                <th>现居住地</th>
+                <td>B市xx区xxxx</td>
+            </tr>
+        </table>
+        
+        <!-- 灰色框内容 -->
+        <div class="comment-box">
+            秦数：等一下，我怎么觉得有点眼熟，这个名字？
+        </div>
+        
+        <button class="back-btn" onclick="window.close()">关闭</button>
+    </div>
+</body>
+</html>

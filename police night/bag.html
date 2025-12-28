@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小包裹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .page-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(74, 111, 216, 0.1);
+            color: #4a6fd8;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .content {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .evidence-id {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .comment-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .back-btn {
+            display: block;
+            width: 100px;
+            margin: 20px auto 0;
+            padding: 10px;
+            text-align: center;
+            background: #4a6fd8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .back-btn:hover {
+            background: #3a5ec8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-indicator">7/30</div>
+        
+        <h1>一个沉甸甸的小包裹</h1>
+        
+
+        </div>
+        
+        <div class="content">
+            <p>包裹材质：黑色塑料袋，多层包裹</p>
+
+            <p>内容物：经过检查，包裹内含有：</p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li>被保鲜膜紧紧包裹的两沓钱，粗略估计有两万元</li>
+                <li>一个封好的信封，封面的黑色水笔字迹被雨水洇湿了看不清楚</li>
+
+            </ul>
+        </div>
+        
+        <div class="comment-box">
+            秦数：携带了伪造身份证吗，难道是在潜逃？...
+        </div>
+        
+        <button class="back-btn" onclick="window.close()">关闭</button>
+    </div>
+</body>
+</html>

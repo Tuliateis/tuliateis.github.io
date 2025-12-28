@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>警局夜班执勤事件</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Microsoft YaHei', 'Segoe UI', 'PingFang SC', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.6;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 模拟监控屏幕效果 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.03) 0px,
+                    rgba(255, 255, 255, 0.03) 1px,
+                    transparent 1px,
+                    transparent 3px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .game-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .game-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #1e90ff, transparent);
+        }
+        
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .player-info {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-left: 4px solid #1e90ff;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        
+        .player-info h2 {
+            color: #1e90ff;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .scenario-section {
+            margin-bottom: 30px;
+        }
+        
+        .scenario-section h3 {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .scenario-content {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .scenario-content p {
+            margin-bottom: 15px;
+        }
+        
+        .record-section {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffa500;
+        }
+        
+        .record-item {
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+        
+        .record-label {
+            color: #ffa500;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* 修改：去掉框框，只保留文字样式 */
+        .note-section {
+            margin: 30px 0;
+            padding: 0;
+        }
+        
+        .note-section h4 {
+            color: #1e90ff;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .note-section p {
+            color: #ffffff;
+            line-height: 1.7;
+        }
+        
+        .warning-section {
+            margin: 20px 0 30px 0;
+            padding: 0;
+        }
+        
+        .warning-section h4 {
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .warning-section p {
+            color: #cccccc;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+        
+        /* 加粗倾斜强调文本 */
+        .emphasis {
+            font-weight: bold;
+            font-style: italic;
+            color: #ff6b6b;
+        }
+        
+        .start-button-container {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+        }
+        
+        .start-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e90ff, #0d6efd);
+            color: white;
+            padding: 16px 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+        }
+        
+        .start-button:hover {
+            background: linear-gradient(135deg, #0d6efd, #1e90ff);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(30, 144, 255, 0.4);
+        }
+        
+        .start-button:active {
+            transform: translateY(1px);
+        }
+        
+        .game-progress {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .game-container {
+                padding: 20px;
+            }
+            
+            .start-button {
+                padding: 14px 40px;
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.6rem;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+        
+        /* 扫描线效果 */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to bottom, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            animation: scan 5s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scan-line"></div>
+    
+    <div class="game-progress">界面 0/30</div>
+    
+    <h1 class="game-title">警局夜班执勤事件</h1>
+    
+    <div class="game-container">
+        <div class="player-info">
+            <h2>警官信息</h2>
+            <p>姓名：秦数</p>
+            <p>警号：0032981</p>
+            <p>职务：A市公安局交通警察支队 夜班执勤警官</p>
+        </div>
+        
+        <div class="scenario-section">
+            <h3>游戏背景</h3>
+            <div class="scenario-content">
+                <p>你叫秦数，警号0032981，是正在值夜班的一名警官。半个小时前你接到一通报警电话，声称在市东郊英宏盘山路发生了一起交通事故，报案人是被撞击的轿车司机，肇事的摩托司机已经昏迷。</p>
+                
+                <p>你前去处理，拨打120将伤势严重的摩托司机送去急救之后，你收集了现场信息，决定先将轿车司机带回警局询问记录。</p>
+            </div>
+        </div>
+        
+        <div class="scenario-section">
+            <h3>现场记录</h3>
+            <div class="record-section">
+                <div class="record-item">
+                    <span class="record-label">时间：</span>2025.9.2 凌晨1：30
+                </div>
+                <div class="record-item">
+                    <span class="record-label">地点：</span>A市英宏山中段盘山公路
+                </div>
+                <div class="record-item">
+                    <span class="record-label">现场情况：</span>
+                    事故发生在公路大角度转弯附近，车牌为MA026的摩托车倒在靠近护栏的一侧，车牌为JC932Q轿车左前侧外壳撞击严重，刹车地点距离撞击点刹车距离正常，属于合理速度，初步判断是由于山体遮挡，摩托车无视野导致相撞，具体还需要进一步调查。
+                </div>
+                <div class="record-item">
+                    <span class="record-label">现场遗落物品：</span>
+                    摩托车车主的背包，内含车主手机，钱包等。
+                </div>
+                <div class="record-item">
+                    <span class="record-label">备注：</span>
+                    事故路段并未处于有效监控范围，需要轿车行车记录仪视频
+                </div>
+            </div>
+        </div>
+        
+    
+        <div class="note-section">
+            <h4>调查任务</h4>
+            <p>请你完成对本次事故的调查和处理，<span class="emphasis">请不要遗漏任何可疑的线索（是任何）</span>。</p>
+        </div>
+        
+  
+        <div class="warning-section">
+            <h4>游戏事项</h4>
+            <p>1. 本游戏不包含任何灵异元素，没有血腥和突脸内容，请放心寻找线索。</p>
+            <p>2. 本游戏所有内容皆为虚构，请勿带入现实，如有雷同，纯属巧合。</p>
+            <p>3. 游戏中的查询系统请按照“人名+事情”、“地点+事情”的格式查询，如“张三杀人案”“游乐园失踪案”</p>
+        </div>
+        
+        <div class="start-button-container">
+            <p>上述内容阅读完毕后，点击下方按钮开始游戏：</p>
+            <a href="main.html" class="start-button">警务系统平台</a>
+        </div>
+    </div>
+    
+    <script>
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 按钮点击效果
+            const startButton = document.querySelector('.start-button');
+            
+            startButton.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            startButton.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            
+            // 模拟加载进度
+            let progress = 0;
+            const progressElement = document.querySelector('.game-progress');
+            
+            const loadInterval = setInterval(() => {
+                if (progress < 100) {
+                    progress += Math.random() * 20;
+                    if (progress > 100) progress = 100;
+                    progressElement.textContent = `界面 0/30 | 加载中... ${Math.floor(progress)}%`;
+                } else {
+                    clearInterval(loadInterval);
+                    progressElement.textContent = '界面 0/30 | 准备就绪';
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

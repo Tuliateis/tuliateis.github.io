@@ -1,0 +1,518 @@
+/* 简化文字效果 */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Courier New', 'Microsoft YaHei', '仿宋', monospace;
+}
+
+body { 
+    background: #8b0000;
+    color: #fff; 
+    min-height: 100vh; 
+    transition: background 0.5s ease; 
+    overflow: hidden;
+    position: relative;
+}
+
+/* 添加噪点纹理 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    animation: noise 0.2s infinite;
+    opacity: 0.3;
+}
+
+@keyframes noise {
+    0% { opacity: 0.2; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0.2; }
+}
+
+.container { 
+    display: flex; 
+    height: 100vh; 
+    width: 100vw;
+    position: relative;
+    z-index: 2;
+}
+
+/* 进度条容器 */
+.progress-container {
+    width: 100px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 进度条发光效果 */
+.progress-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(0deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    animation: glow 2s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes glow {
+    0% { opacity: 0.3; transform: translateY(-100%); }
+    100% { opacity: 0.3; transform: translateY(100%); }
+}
+
+/* 进度条 */
+.progress-bar {
+    width: 40px;
+    height: 80%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* 进度填充 */
+.progress-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(255, 255, 255, 0.7) 50%, 
+        rgba(255, 255, 255, 0.9) 100%);
+    border-radius: 18px;
+    transition: height 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    animation: fillPulse 3s infinite;
+}
+
+@keyframes fillPulse {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
+}
+
+/* 主内容区域 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    width: 100%;
+    position: relative;
+}
+
+/* 搜索容器 */
+.search-container {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+/* 搜索标题 */
+.search-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #8b0000,
+        0 0 30px #8b0000;
+    animation: textGlitch 3s infinite;
+    position: relative;
+}
+
+@keyframes textGlitch {
+    0%, 100% { 
+        transform: translateX(0);
+        text-shadow: 
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 20px #8b0000,
+            0 0 30px #8b0000;
+    }
+    97% { 
+        transform: translateX(2px);
+        text-shadow: 
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 20px #8b0000,
+            0 0 30px #8b0000,
+            0 0 40px #ff0000;
+    }
+    98% { 
+        transform: translateX(-2px);
+        text-shadow: 
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 20px #8b0000,
+            0 0 30px #8b0000,
+            0 0 40px #00ff00;
+    }
+    99% { 
+        transform: translateX(1px);
+        text-shadow: 
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 20px #8b0000,
+            0 0 30px #8b0000;
+    }
+}
+
+/* 搜索框容器 */
+.search-box-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+}
+
+/* 搜索框 */
+.search-box {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 18px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    transition: all 0.3s;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.search-box:focus {
+    border-color: #ffffff;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 
+        0 0 15px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(255, 0, 0, 0.3);
+    animation: inputPulse 2s infinite;
+}
+
+@keyframes inputPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 0, 0, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 0, 0, 0.5); }
+}
+
+/* 搜索按钮 */
+.search-button {
+    padding: 0 30px;
+    background: linear-gradient(45deg, #8b0000, #660000);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.search-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+.search-button:hover {
+    background: linear-gradient(45deg, #660000, #440000);
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.search-button:hover::before {
+    left: 100%;
+}
+
+/* 结果容器 */
+.result-container {
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    position: relative;
+    backdrop-filter: blur(5px);
+    box-shadow: 
+        0 0 20px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+/* 结果内容 - 简化普通文字效果 */
+.result-content {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #ffffff; /* 改为纯白色 */
+    white-space: pre-wrap;
+    font-family: 'Courier New', '仿宋', monospace;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+/* 只保留您要求的特殊效果 */
+.result-content b {
+    color: #ffcccc;
+    font-weight: bold;
+}
+
+.result-content i b {
+    color: #ffcccc;
+    font-style: italic;
+    font-weight: bold;
+}
+
+/* 特殊字符效果 */
+.result-content .memory-blur {
+    color: rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    animation: blurPulse 2s infinite;
+}
+
+@keyframes blurPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+}
+
+/* 闪白效果 */
+.flash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    opacity: 0;
+    z-index: 1000;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+.flash-overlay.active {
+    animation: flash 1s ease-out;
+}
+
+@keyframes flash {
+    0% { opacity: 0; }
+    20% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+/* 重置提示 */
+.reset-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: 0;
+    z-index: 999;
+    pointer-events: none;
+    padding: 30px 50px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 0, 0, 0.5);
+    box-shadow: 
+        0 0 30px rgba(255, 0, 0, 0.5),
+        inset 0 0 20px rgba(255, 0, 0, 0.2);
+    font-size: 28px;
+    font-style: italic;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Courier New', '黑体', monospace;
+    color: #ff0000;
+    text-shadow: 
+        0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 30px #ff0000;
+    animation: messageGlitch 0.5s infinite;
+    display: none;
+}
+
+.reset-message.show {
+    display: block;
+    animation: messageFade 3s ease forwards;
+}
+
+@keyframes messageGlitch {
+    0% { 
+        transform: translate(calc(-50% + 1px), calc(-50% - 1px));
+        opacity: 0.8;
+    }
+    50% { 
+        transform: translate(calc(-50% - 1px), calc(-50% + 1px));
+        opacity: 0.9;
+    }
+    100% { 
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes messageFade {
+    0% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    20% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1);
+    }
+    80% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(1.2);
+        display: none;
+    }
+}
+
+/* 黑暗程度 */
+.darkness-0 { background: #8b0000; }
+.darkness-1 { background: #550000; }
+.darkness-2 { background: #330000; }
+.darkness-3 { background: #110000; }
+.darkness-4 { background: #000000; }
+
+/* 为黑色背景添加额外的恐怖效果 */
+.darkness-4::before {
+    opacity: 0.1;
+    animation: noise 0.1s infinite;
+}
+
+/* 滚动条样式 */
+.result-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.result-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.result-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(transparent, #8b0000, transparent);
+    border-radius: 4px;
+    animation: scrollGlow 2s infinite;
+}
+
+@keyframes scrollGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+.result-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(transparent, #ff0000, transparent);
+}
+
+/* 打字机效果类 */
+.typing-effect {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #ff0000;
+    animation: typingCursor 0.8s infinite;
+}
+
+@keyframes typingCursor {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: #ff0000; }
+}
+/* 结束按钮样式 */
+#endButtonContainer {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#endButton {
+    padding: 12px 30px;
+    background: linear-gradient(45deg, #8b0000, #660000);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: block;
+    margin: 0 auto;
+}
+
+#endButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+#endButton:hover {
+    background: linear-gradient(45deg, #660000, #440000);
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+#endButton:hover::before {
+    left: 100%;
+}

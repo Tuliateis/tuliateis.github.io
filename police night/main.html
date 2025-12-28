@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A市公安局北江东分局警务平台</title>
+    
+    <!-- 加载CSS文件 -->
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dialogue.css">
+    
+    <style>
+        /* 临时内联样式确保立即生效 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: #f0f2f5; 
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <h1 class="login-title">A市公安局北江东分局警务平台</h1>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" placeholder="请输入用户名" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <div id="login-error" class="error-message"></div>
+                <button id="login-btn" class="login-btn">登录系统</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主系统界面（初始隐藏） -->
+    <div id="main-screen" class="main-screen" style="display: none;">
+        <!-- 顶部标题栏 -->
+        <header class="main-header">
+            <div class="header-left">
+                <h1 class="system-title">A市公安局北江东分局警务平台</h1>
+            </div>
+            <div class="header-right">
+                <span class="page-indicator">界面1/30</span>
+            </div>
+        </header>
+        
+        <!-- 主体内容区 -->
+        <main class="main-content">
+            <!-- 左侧菜单 -->
+            <aside class="sidebar">
+                <nav class="main-nav">
+                    <button class="nav-btn active" data-tab="personnel">人员资料管理</button>
+                    <button class="nav-btn" data-tab="traffic">交通信息管理</button>
+                    <button class="nav-btn" data-tab="cases">案件资料管理</button>
+                </nav>
+            </aside>
+            
+            <!-- 中间内容区 -->
+            <section class="content-area">
+                <!-- 标签页内容会动态加载到这里 -->
+                <div id="tab-content" class="tab-content">
+                    <!-- 默认显示人员资料管理 -->
+                    <div class="tab-pane active" id="personnel-tab">
+                        <h2 class="tab-title">人员资料管理</h2>
+                        <div class="search-section">
+                            <div class="search-box">
+                                <label>姓名</label>
+                                <input type="text" id="search-name" placeholder="请输入姓名">
+                                <button id="search-personnel" class="search-btn">搜索</button>
+                            </div>
+                        </div>
+                        <div class="results-section">
+                            <div id="personnel-results" class="results-container">
+                                <div class="empty-state">请输入姓名进行搜索</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 右侧面板 -->
+            <aside class="right-panel">
+                <!-- 右侧标签切换 -->
+                <div class="right-tabs">
+                    <button class="right-tab-btn active" data-right-tab="dialogue">询问记录</button>
+                    <button class="right-tab-btn" data-right-tab="evidence">证物收集</button>
+                </div>
+                
+                <!-- 询问记录 -->
+                <div id="dialogue-tab" class="right-tab-content active">
+                    <div class="dialogue-container">
+                        <div id="dialogue-content" class="dialogue-messages">
+                            <!-- 对话内容会动态添加 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 证物收集 -->
+                <div id="evidence-tab" class="right-tab-content">
+                    <div class="evidence-container">
+                        <div class="evidence-list" id="evidence-list">
+                            <div class="evidence-item" onclick="showMemoryCard()">
+                                <h3>行车记录仪存储卡</h3>
+                                <p>涉事轿车的行车记录仪存储卡，可以查看刚才的行车记录</p>
+                             
+                            </div>
+                            <div class="evidence-item" onclick="openBackpackItems()">
+                                <h3>摩托车车主背包</h3>
+                                <p>现场遗落的摩托车车主背包，里面好像有些东西</p>
+                            
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- 加载JavaScript文件 -->
+    <script src="js/auth.js"></script>
+    <script src="js/system.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/dialogue.js"></script>
+    
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成');
+            
+            // 初始化登录功能
+            if (typeof initLogin === 'function') {
+                initLogin();
+            }
+            
+            // 自动聚焦到用户名输入框
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) {
+                usernameInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老旧的手机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative; /* 添加相对定位 */
+        }
+          /* 灰色提示框 - 只在密码输入前显示 */
+        .hint-box {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .hint-box.hidden {
+            display: none;
+        }
+        
+        .hint-box .hint-name {
+            color: #0066cc;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .phone-wrapper {
+            width: 400px;
+            height: 600px;
+            position: relative;
+        }
+        
+        .phone-container {
+            width: 100%;
+            height: 100%;
+            background: #222;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 8px solid #111;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            position: relative;
+            cursor: pointer;
+            z-index: 1;
+        }
+        
+        .phone-screen.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .screen-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 2;
+        }
+        
+        .notification-screen {
+            color: white;
+            padding: 20px;
+        }
+        
+        .password-screen {
+            background: #111;
+            color: white;
+            padding: 30px;
+        }
+        
+        .desktop-screen {
+            background: #0a0a0a;
+            color: white;
+        }
+        
+        .message-screen {
+            background: #0a0a0a;
+            color: white;
+        }
+        
+        .browser-screen {
+            background: #0a0a0a;
+            color: white;
+        }
+        
+        .gallery-screen {
+            background: #0a0a0a;
+            color: white;
+        }
+        
+        .image-viewer-screen {
+            background: #000;
+            color: white;
+        }
+        
+        .status-bar {
+            height: 25px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 12px;
+            color: #fff;
+        }
+        
+        .notification-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .notification-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .notification-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+        }
+        
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ff6b6b;
+        }
+        
+        .notification-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .password-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .password-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .password-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #666;
+            transition: all 0.3s;
+        }
+        
+        .password-dot.filled {
+            background: #4a6fd8;
+            border-color: #4a6fd8;
+        }
+        
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .num-btn[data-num="0"] {
+            grid-column: 2;
+        }
+        
+        .num-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .num-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .del-btn {
+            background: rgba(255, 99, 99, 0.2);
+        }
+        
+        .desktop-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100% - 50px);
+            gap: 40px;
+        }
+        
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .app-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+        
+        .icon-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        .hint-text {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            z-index: 3;
+        }
+        
+        .error-message {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 10px;
+            height: 20px;
+        }
+        
+        .swipe-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        
+        .active-layer {
+            display: block !important;
+        }
+        
+        /* 信息界面样式 */
+        .message-header {
+            height: 50px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .back-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            color: #4a6fd8;
+        }
+        
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .message-list {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .message-item {
+            display: flex;
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .message-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #666;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .message-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .sender-name {
+            font-weight: 500;
+            font-size: 14px;
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .message-preview {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        /* 不可点击的消息 */
+        .message-item.unclickable {
+            opacity: 0.5;
+            cursor: default !important;
+        }
+        
+        .message-item.unclickable:hover {
+            background: transparent;
+        }
+        
+        /* 消息详情界面 */
+        .detail-header {
+            height: 50px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .detail-title {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .detail-content {
+            padding: 20px;
+        }
+        
+        .detail-phone {
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .detail-message {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        /* 浏览器界面样式 */
+        .browser-tabs {
+            display: flex;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+            cursor: pointer;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            color: #4a6fd8;
+            border-bottom: 2px solid #4a6fd8;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        /* 内容区域 */
+        .browser-content {
+            height: calc(100% - 110px);
+            overflow-y: auto;
+        }
+        
+        .tab-content {
+            display: none;
+            height: 100%;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 搜索区域 */
+        .search-section {
+            padding: 20px 15px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #4a6fd8;
+        }
+        
+        .search-btn {
+            padding: 10px 20px;
+            background: #4a6fd8;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* 搜索结果 */
+        .search-results {
+            padding: 0 15px;
+        }
+        
+        /* 错误信息 */
+        .error-message, .error-page {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .error-message h3, .error-page h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+        
+        .error-message p, .error-page p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+        }
+        
+        .retry-btn {
+            padding: 10px 30px;
+            background: #4a6fd8;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* 浏览记录 */
+        .history-list {
+            padding: 15px;
+        }
+        
+        .history-date {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            padding: 10px 0 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .history-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .history-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .history-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
+        .history-content {
+            flex: 1;
+        }
+        
+        .history-title {
+            font-size: 13px;
+            line-height: 1.4;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            padding: 40px 20px;
+        }
+        
+        /* 相册界面样式 */
+        .gallery-content {
+            height: calc(100% - 50px);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .album-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .album-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-3px);
+        }
+        
+        .album-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .album-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* 图片查看器 */
+        .image-viewer {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .image-container {
+            margin-bottom: 20px;
+        }
+        
+        .image-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .image-item:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .image-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* 秘密图片样式 */
+        .secret-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 相册密码界面 */
+        .gallery-password-screen {
+            background: #111;
+            color: white;
+            padding: 30px;
+        }
+        
+        .gallery-password-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .gallery-password-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .gallery-password-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid #666;
+            transition: all 0.3s;
+        }
+        
+        .gallery-password-dot.filled {
+            background: #4a6fd8;
+            border-color: #4a6fd8;
+        }
+        
+        .gallery-numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .gallery-num-btn[data-num="0"] {
+            grid-column: 2;
+        }
+        
+        .gallery-num-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-num-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .gallery-num-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .gallery-del-btn {
+            background: rgba(255, 99, 99, 0.2);
+        }
+        
+        .gallery-error-message {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 10px;
+            height: 20px;
+        }
+        
+        /* 图片放大查看器 */
+        .fullscreen-image-viewer {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .fullscreen-header {
+            height: 50px;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            justify-content: space-between;
+        }
+        
+        .fullscreen-image-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .fullscreen-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .image-info {
+            padding: 10px 20px;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 灰色提示框 - 只在密码输入前显示 -->
+    <div class="hint-box" id="hintBox">
+        <div class="hint-name">秦数：</div>
+        翻看别人手机不是很好，但六位数密码一般都是一些重要的日期吧，比如生日什么的。
+    </div>
+    <div class="phone-wrapper">
+        <div class="phone-container">
+            <div class="phone-screen" id="phoneScreen">
+                <div class="hint-text" id="clickHint">点击屏幕点亮</div>
+                
+                <div class="screen-layer notification-screen" id="notificationScreen">
+                    <div class="status-bar">
+                        <div>01:24</div>
+                        <div>无网络连接</div>
+                    </div>
+                    
+                    <div class="notification-card" id="notificationCard">
+                        <div class="notification-time">刚刚</div>
+                        <div class="notification-title">🔴 紧急新闻</div>
+                        <div class="notification-content">加油站杀人抢劫犯仍未落网，凶犯在逃...</div>
+                    </div>
+                    
+                    <div class="swipe-hint" id="swipeHint">点击通知解锁</div>
+                </div>
+                
+                <div class="screen-layer password-screen" id="passwordScreen">
+                    <div class="password-title">请输入解锁密码</div>
+                    
+                    <div class="password-dots">
+                        <div class="password-dot" id="dot1"></div>
+                        <div class="password-dot" id="dot2"></div>
+                        <div class="password-dot" id="dot3"></div>
+                        <div class="password-dot" id="dot4"></div>
+                        <div class="password-dot" id="dot5"></div>
+                        <div class="password-dot" id="dot6"></div>
+                    </div>
+                    
+                    <div class="error-message" id="errorMsg"></div>
+                    
+                    <div class="numpad">
+                        <button class="num-btn" data-num="1">1</button>
+                        <button class="num-btn" data-num="2">2</button>
+                        <button class="num-btn" data-num="3">3</button>
+                        <button class="num-btn" data-num="4">4</button>
+                        <button class="num-btn" data-num="5">5</button>
+                        <button class="num-btn" data-num="6">6</button>
+                        <button class="num-btn" data-num="7">7</button>
+                        <button class="num-btn" data-num="8">8</button>
+                        <button class="num-btn" data-num="9">9</button>
+                        <button class="num-btn" data-num="0">0</button>
+                        <button class="num-btn del-btn" id="delBtn">⌫</button>
+                    </div>
+                </div>
+                
+                <div class="screen-layer desktop-screen" id="desktopScreen">
+                    <div class="status-bar">
+                        <div>01:24</div>
+                        <div>无网络连接</div>
+                    </div>
+                    
+                    <div class="desktop-icons">
+                        <div class="app-icon" onclick="showMessageApp()">
+                            <div style="font-size: 40px;">💬</div>
+                            <div class="icon-text">信息</div>
+                        </div>
+                        
+                        <div class="app-icon" onclick="showBrowser()">
+                            <div style="font-size: 40px;">🌐</div>
+                            <div class="icon-text">互联网</div>
+                        </div>
+                        
+                        <div class="app-icon" onclick="showGallery()">
+                            <div style="font-size: 40px;">🖼️</div>
+                            <div class="icon-text">相册</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screen-layer message-screen" id="messageScreen"></div>
+                
+                <div class="screen-layer browser-screen" id="browserScreen"></div>
+                
+                <!-- 添加相册界面容器 -->
+                <div class="screen-layer gallery-screen" id="galleryScreen"></div>
+                
+                <!-- 添加图片放大查看器容器 -->
+                <div class="screen-layer image-viewer-screen" id="imageViewerScreen"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 状态管理
+        let currentState = 'black';
+        let password = '';
+        const correctPassword = '010916';
+        let galleryPassword = '';
+        const correctGalleryPassword = '0726';
+
+         // 获取提示框元素
+        const hintBox = document.getElementById('hintBox');
+
+        // 检查密码
+        function checkPassword() {
+            if (password === correctPassword) {
+                // 密码正确，隐藏提示框
+                hintBox.classList.add('hidden');
+                
+                // 进入桌面
+                setTimeout(() => {
+                    currentState = 'desktop';
+                    passwordScreen.classList.remove('active-layer');
+                    desktopScreen.classList.add('active-layer');
+                }, 300);
+            } else {
+                // 密码错误
+                errorMsg.textContent = '密码错误';
+                setTimeout(() => {
+                    password = '';
+                    updatePasswordDots();
+                    clearError();
+                }, 1000);
+            }
+        }
+        
+        // 获取元素
+        const phoneScreen = document.getElementById('phoneScreen');
+        const clickHint = document.getElementById('clickHint');
+        const notificationScreen = document.getElementById('notificationScreen');
+        const passwordScreen = document.getElementById('passwordScreen');
+        const desktopScreen = document.getElementById('desktopScreen');
+        const messageScreen = document.getElementById('messageScreen');
+        const browserScreen = document.getElementById('browserScreen');
+        const galleryScreen = document.getElementById('galleryScreen');
+        const imageViewerScreen = document.getElementById('imageViewerScreen');
+        const notificationCard = document.getElementById('notificationCard');
+        const errorMsg = document.getElementById('errorMsg');
+        const dots = [
+            document.getElementById('dot1'),
+            document.getElementById('dot2'),
+            document.getElementById('dot3'),
+            document.getElementById('dot4'),
+            document.getElementById('dot5'),
+            document.getElementById('dot6')
+        ];
+        
+        // 初始化
+        function initPhone() {
+            currentState = 'black';
+            phoneScreen.classList.remove('active');
+            notificationScreen.classList.remove('active-layer');
+            passwordScreen.classList.remove('active-layer');
+            desktopScreen.classList.remove('active-layer');
+            messageScreen.classList.remove('active-layer');
+            browserScreen.classList.remove('active-layer');
+            galleryScreen.classList.remove('active-layer');
+            imageViewerScreen.classList.remove('active-layer');
+            clickHint.style.display = 'block';
+        }
+        
+        // 点击手机屏幕
+        phoneScreen.addEventListener('click', function(e) {
+            if (currentState === 'black') {
+                currentState = 'notification';
+                phoneScreen.classList.add('active');
+                notificationScreen.classList.add('active-layer');
+                clickHint.style.display = 'none';
+            }
+        });
+        
+        // 点击通知卡片
+        notificationCard.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showPasswordScreen();
+        });
+        
+        // 显示密码界面
+        function showPasswordScreen() {
+            if (currentState === 'notification') {
+                currentState = 'password';
+                notificationScreen.classList.remove('active-layer');
+                passwordScreen.classList.add('active-layer');
+                password = '';
+                updatePasswordDots();
+                clearError();
+            }
+        }
+        
+        // 更新密码点
+        function updatePasswordDots() {
+            dots.forEach((dot, index) => {
+                if (index < password.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+        
+        // 清除错误
+        function clearError() {
+            errorMsg.textContent = '';
+        }
+        
+        // 数字按钮点击
+        document.querySelectorAll('.num-btn[data-num]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                if (currentState === 'password' && password.length < 6) {
+                    password += this.getAttribute('data-num');
+                    updatePasswordDots();
+                    clearError();
+                    
+                    if (password.length === 6) {
+                        checkPassword();
+                    }
+                }
+            });
+        });
+        
+        // 删除按钮
+        document.getElementById('delBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (currentState === 'password' && password.length > 0) {
+                password = password.slice(0, -1);
+                updatePasswordDots();
+                clearError();
+            }
+        });
+        
+        // 在checkPassword函数中确保隐藏提示框
+        function checkPassword() {
+            if (password === correctPassword) {
+                // 密码正确，隐藏提示框
+                if (hintBox) {
+                    hintBox.classList.add('hidden');
+                }
+                
+                // 进入桌面
+                setTimeout(() => {
+                    currentState = 'desktop';
+                    passwordScreen.classList.remove('active-layer');
+                    desktopScreen.classList.add('active-layer');
+                }, 300);
+            } else {
+                // 密码错误
+                errorMsg.textContent = '密码错误';
+                setTimeout(() => {
+                    password = '';
+                    updatePasswordDots();
+                    clearError();
+                }, 1000);
+            }
+        }
+        
+        // 键盘支持
+        document.addEventListener('keydown', function(e) {
+            if (currentState === 'password') {
+                if (e.key >= '0' && e.key <= '9' && password.length < 6) {
+                    password += e.key;
+                    updatePasswordDots();
+                    clearError();
+                    
+                    if (password.length === 6) {
+                        checkPassword();
+                    }
+                } else if (e.key === 'Backspace' && password.length > 0) {
+                    password = password.slice(0, -1);
+                    updatePasswordDots();
+                    clearError();
+                }
+            }
+        });
+        
+        // 信息应用
+        function showMessageApp() {
+            currentState = 'message';
+            desktopScreen.classList.remove('active-layer');
+            messageScreen.classList.add('active-layer');
+            loadMessages();
+        }
+        
+        // 加载消息
+        function loadMessages() {
+            const messages = [
+                { 
+                    sender: "02156xxxx10", 
+                    name: "驿站", 
+                    time: "昨天", 
+                    content: "您购买的包裹已送达岐山西侧5号快递柜，请及时提取。",
+                    clickable: true
+                },
+                { 
+                    sender: "10635xxxx00", 
+                    name: "A市气象局", 
+                    time: "昨天", 
+                    content: "提醒您：近日雨水较多，多地区降水量不断升高，山区注意洪水监测和预警，出行注意。",
+                    clickable: true
+                },
+                { 
+                    sender: "12693xxxx12", 
+                    name: "驿站", 
+                    time: "8/10", 
+                    content: "您购买的包裹【加绒劳保手套橡胶防滑耐磨...】已送达岐山西侧1号快递柜，请及时提取。",
+                    clickable: true
+                },
+                { 
+                    sender: "林业银行", 
+                    name: "林业银行", 
+                    time: "8/4", 
+                    content: "您在本行的账户被转入50000元，请登录手机银行查看。",
+                    clickable: true
+                },
+                { 
+                    sender: "13861xxxx92", 
+                    name: "未知号码", 
+                    time: "8/4", 
+                    content: "钱给你打过去了，按照约定你我都会守口如瓶，不要再联系我了",
+                    clickable: true
+                },
+                { 
+                    sender: "未知号码", 
+                    name: "嘿嘿嘿侦探社", 
+                    time: "8/1", 
+                    content: " 您要调查的对象的个人信息和照片已发送到您的邮箱，请注意查收",
+                    clickable: true
+                    
+                },
+                { 
+                    sender: "13367xxxx81", 
+                    name: "健康大药房", 
+                    time: "7/19", 
+                    content: "痛风筋骨贴，29.9元/5贴起，购买点击xxxxxxxx谨防受骗。",
+                    clickable: true
+                },
+                { 
+                    sender: "未知号码", 
+                    name: "未知号码", 
+                    time: "6/30", 
+                    content: " ",
+                    clickable: false
+                },
+                { 
+                    sender: "未知号码", 
+                    name: "未知号码", 
+                    time: "3/21", 
+                    content: " ",
+                    clickable: false
+                }
+            ];
+            
+            const messageList = document.getElementById('messageList');
+            if (!messageList) {
+                // 初始化消息界面
+                messageScreen.innerHTML = `
+                    <div class="message-header">
+                        <div class="back-btn" onclick="backToDesktop()">←</div>
+                        <div class="header-title">信息</div>
+                    </div>
+                    <div class="message-list" id="messageList"></div>
+                `;
+            }
+            
+            const listElement = document.getElementById('messageList');
+            listElement.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-item';
+                
+                if (!msg.clickable) {
+                    messageDiv.classList.add('unclickable');
+                }
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">${msg.name.charAt(0)}</div>
+                    <div class="message-content">
+                        <div class="message-header-inner">
+                            <div class="sender-name">${msg.name}</div>
+                            <div class="message-time">${msg.time}</div>
+                        </div>
+                        <div class="message-preview">${msg.content}</div>
+                    </div>
+                `;
+                
+                if (msg.clickable) {
+                    messageDiv.style.cursor = 'pointer';
+                    messageDiv.addEventListener('click', () => {
+                        showMessageDetail(msg);
+                    });
+                } else {
+                    messageDiv.style.cursor = 'default';
+                }
+                
+                listElement.appendChild(messageDiv);
+            });
+        }
+        
+        // 显示消息详情
+        function showMessageDetail(msg) {
+            messageScreen.innerHTML = `
+                <div class="detail-header">
+                    <div class="back-btn" onclick="backToMessageList()">←</div>
+                    <div class="detail-title">信息详情</div>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-phone">${msg.sender}</div>
+                    <div class="detail-message">${msg.content}</div>
+                </div>
+            `;
+        }
+        
+        // 返回消息列表
+        function backToMessageList() {
+            loadMessages();
+        }
+        
+        // 返回桌面
+        function backToDesktop() {
+            currentState = 'desktop';
+            messageScreen.classList.remove('active-layer');
+            browserScreen.classList.remove('active-layer');
+            galleryScreen.classList.remove('active-layer');
+            imageViewerScreen.classList.remove('active-layer');
+            desktopScreen.classList.add('active-layer');
+        }
+        
+        // 返回相册
+        function backToGallery() {
+            currentState = 'gallery';
+            imageViewerScreen.classList.remove('active-layer');
+            galleryScreen.classList.add('active-layer');
+            showSecretAlbumContent();
+        }
+        
+        // 浏览器应用
+        function showBrowser() {
+            currentState = 'browser';
+            desktopScreen.classList.remove('active-layer');
+            browserScreen.classList.add('active-layer');
+            loadBrowser();
+        }
+        
+        // 加载浏览器界面
+        function loadBrowser() {
+            const browserHTML = `
+                <div class="browser-header">
+                    <div class="back-btn" onclick="backToDesktop()">←</div>
+                    <div class="browser-title">互联网</div>
+                </div>
+                
+                <div class="browser-tabs">
+                    <div class="tab-btn active" data-tab="home">主页</div>
+                    <div class="tab-btn" data-tab="history">浏览记录</div>
+                </div>
+                
+                <div class="browser-content">
+                    <!-- 主页内容 -->
+                    <div class="tab-content active" id="home-tab">
+                        <div class="search-section">
+                            <div class="search-box">
+                                <input type="text" id="browser-search" placeholder="搜索网页...">
+                                <button class="search-btn" onclick="doSearch()">搜索</button>
+                            </div>
+                        </div>
+                        
+                        <div class="search-results" id="searchResults">
+                            <!-- 搜索结果会显示在这里 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 浏览记录 -->
+                    <div class="tab-content" id="history-tab">
+                        <div class="history-list" id="historyList">
+                            <!-- 浏览记录会动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            browserScreen.innerHTML = browserHTML;
+            
+            // 绑定标签页切换
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    switchTab(tab);
+                });
+            });
+            
+            // 绑定搜索框回车键
+            const searchInput = document.getElementById('browser-search');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        doSearch();
+                    }
+                });
+            }
+            
+            // 加载浏览记录
+            loadHistory();
+        }
+        
+        // 切换标签页
+        function switchTab(tabName) {
+            // 更新标签按钮
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
+            
+            // 更新内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+        
+        // 搜索功能
+        function doSearch() {
+            const searchInput = document.getElementById('browser-search');
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                document.getElementById('searchResults').innerHTML = '<div class="empty-state">请输入搜索内容</div>';
+                return;
+            }
+            
+            // 显示无网络连接
+            document.getElementById('searchResults').innerHTML = `
+                <div class="error-message">
+                    <div class="error-icon">📡</div>
+                    <h3>无网络连接</h3>
+                    <p>无法连接到互联网，请检查网络设置</p>
+                    <button class="retry-btn" onclick="doSearch()">重试</button>
+                </div>
+            `;
+        }
+        
+        // 加载浏览记录
+        function loadHistory() {
+            const historyItems = [
+                { date: "今天，2025年8月30日" },
+                { 
+                    title: "8月28日A市东郊一加油站发生一起恶性杀人事件，嫌疑人遮蔽面貌手持凶器，趁一司机无防备之际对其连捅数刀，后迅速消失于监控画面，案件还在进一步侦破，广大市民如有线索可联系A市公安局岐山分局说明....",
+                    type: "news"
+                },
+                { title: "A市交通路线详情...", type: "website" },
+                { date: "2025年8月6日" },
+                { title: "白度搜索：办假证联系电话", type: "search" },
+                { title: "白度搜索：痛风如何缓解", type: "search" },
+                
+                { date: "一个月以前" },
+                { title: "白度搜索：举报信可能会被拦截吗？", type: "search" },
+                { title: "白度搜索：举报信多久会收到回复？", type: "search" },
+                { title: "白度搜索：如何举报当官的人？", type: "search" },
+                { title: "A市林业局官方网站：管理人员联系方式", type: "website" },
+                { title: "岐山西新温泉旅游酒店建设项目开工大吉，xx建筑有限公司各领导出席开工现场，相关信息进一步报道中...", type: "news" },
+                { title: "A市林业局招聘公告：面试安排", type: "website" }
+            ];
+            
+            const historyList = document.getElementById('historyList');
+            if (!historyList) return;
+            
+            let historyHTML = '';
+            
+            historyItems.forEach(item => {
+                if (item.date) {
+                    // 日期分隔符
+                    historyHTML += `<div class="history-date">${item.date}</div>`;
+                } else {
+                    // 浏览记录项
+                    const icon = item.type === 'search' ? '🔍' : 
+                                item.type === 'news' ? '📰' : '🌐';
+                    
+                    historyHTML += `
+                        <div class="history-item" onclick="showNetworkError()">
+                            <div class="history-icon">${icon}</div>
+                            <div class="history-content">
+                                <div class="history-title">${item.title}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            historyList.innerHTML = historyHTML;
+        }
+        
+        // 显示网络错误
+        function showNetworkError() {
+            browserScreen.innerHTML = `
+                <div class="browser-header">
+                    <div class="back-btn" onclick="loadBrowser()">←</div>
+                    <div class="browser-title">网页无法访问</div>
+                </div>
+                <div class="error-page">
+                    <div class="error-icon">📡</div>
+                    <h3>无网络连接</h3>
+                    <p>无法加载网页，请检查网络设置</p>
+                    <button class="retry-btn" onclick="loadBrowser()">返回</button>
+                </div>
+            `;
+        }
+        
+        // 相册应用
+        function showGallery() {
+            currentState = 'gallery';
+            desktopScreen.classList.remove('active-layer');
+            galleryScreen.classList.add('active-layer');
+            loadGallery();
+        }
+        
+        // 加载相册界面
+        function loadGallery() {
+            const galleryHTML = `
+                <div class="message-header">
+                    <div class="back-btn" onclick="backToDesktop()">←</div>
+                    <div class="header-title">相册</div>
+                </div>
+                <div class="gallery-content">
+                    <div class="album-grid">
+                        <div class="album-item" onclick="showSecretAlbum()">
+                            <div class="album-icon">🔒</div>
+                            <div class="album-title">加密相册</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            galleryScreen.innerHTML = galleryHTML;
+        }
+        
+        // 显示秘密相册密码界面
+        function showSecretAlbum() {
+            galleryPassword = '';
+            galleryScreen.innerHTML = `
+                <div class="gallery-password-screen">
+                    <div class="gallery-password-title">请输入加密相册密码</div>
+                    
+                    <div class="gallery-password-dots">
+                        <div class="gallery-password-dot" id="galleryDot1"></div>
+                        <div class="gallery-password-dot" id="galleryDot2"></div>
+                        <div class="gallery-password-dot" id="galleryDot3"></div>
+                        <div class="gallery-password-dot" id="galleryDot4"></div>
+                    </div>
+                    
+                    <div class="gallery-error-message" id="galleryErrorMsg"></div>
+                    
+                    <div class="gallery-numpad">
+                        <button class="gallery-num-btn" data-num="1">1</button>
+                        <button class="gallery-num-btn" data-num="2">2</button>
+                        <button class="gallery-num-btn" data-num="3">3</button>
+                        <button class="gallery-num-btn" data-num="4">4</button>
+                        <button class="gallery-num-btn" data-num="5">5</button>
+                        <button class="gallery-num-btn" data-num="6">6</button>
+                        <button class="gallery-num-btn" data-num="7">7</button>
+                        <button class="gallery-num-btn" data-num="8">8</button>
+                        <button class="gallery-num-btn" data-num="9">9</button>
+                        <button class="gallery-num-btn" data-num="0">0</button>
+                        <button class="gallery-num-btn gallery-del-btn" id="galleryDelBtn">⌫</button>
+                    </div>
+                </div>
+            `;
+            
+            // 绑定相册数字按钮
+            document.querySelectorAll('.gallery-num-btn[data-num]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    if (galleryPassword.length < 4) {
+                        galleryPassword += this.getAttribute('data-num');
+                        updateGalleryPasswordDots();
+                        clearGalleryError();
+                        
+                        if (galleryPassword.length === 4) {
+                            checkGalleryPassword();
+                        }
+                    }
+                });
+            });
+            
+            // 绑定相册删除按钮
+            const galleryDelBtn = document.getElementById('galleryDelBtn');
+            if (galleryDelBtn) {
+                galleryDelBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (galleryPassword.length > 0) {
+                        galleryPassword = galleryPassword.slice(0, -1);
+                        updateGalleryPasswordDots();
+                        clearGalleryError();
+                    }
+                });
+            }
+            
+            // 键盘支持
+            const keyHandler = function(e) {
+                if (galleryPassword.length < 4) {
+                    if (e.key >= '0' && e.key <= '9') {
+                        galleryPassword += e.key;
+                        updateGalleryPasswordDots();
+                        clearGalleryError();
+                        
+                        if (galleryPassword.length === 4) {
+                            checkGalleryPassword();
+                        }
+                    } else if (e.key === 'Backspace' && galleryPassword.length > 0) {
+                        galleryPassword = galleryPassword.slice(0, -1);
+                        updateGalleryPasswordDots();
+                        clearGalleryError();
+                    }
+                }
+            };
+            
+            document.addEventListener('keydown', keyHandler);
+            
+            // 存储事件处理器，以便后续移除
+            galleryScreen.dataset.keyHandler = 'true';
+        }
+        
+        // 更新相册密码点
+        function updateGalleryPasswordDots() {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`galleryDot${i}`);
+                if (dot) {
+                    if (i <= galleryPassword.length) {
+                        dot.classList.add('filled');
+                    } else {
+                        dot.classList.remove('filled');
+                    }
+                }
+            }
+        }
+        
+        // 清除相册错误
+        function clearGalleryError() {
+            const galleryErrorMsg = document.getElementById('galleryErrorMsg');
+            if (galleryErrorMsg) {
+                galleryErrorMsg.textContent = '';
+            }
+        }
+        
+        // 检查相册密码
+        function checkGalleryPassword() {
+            if (galleryPassword === correctGalleryPassword) {
+                // 密码正确，显示秘密相册内容
+                setTimeout(() => {
+                    showSecretAlbumContent();
+                }, 300);
+            } else {
+                // 密码错误
+                const galleryErrorMsg = document.getElementById('galleryErrorMsg');
+                if (galleryErrorMsg) {
+                    galleryErrorMsg.textContent = '密码错误';
+                }
+                setTimeout(() => {
+                    galleryPassword = '';
+                    updateGalleryPasswordDots();
+                    clearGalleryError();
+                }, 1000);
+            }
+        }
+        
+        // 显示秘密相册内容
+        function showSecretAlbumContent() {
+            galleryScreen.innerHTML = `
+                <div class="message-header">
+                    <div class="back-btn" onclick="loadGallery()">←</div>
+                    <div class="header-title">加密相册</div>
+                </div>
+                <div class="gallery-content">
+                    <div class="image-viewer">
+                        <h3 style="text-align:center;margin-bottom:20px;">加密图片</h3>
+                        
+                        <div class="image-container">
+                            <div class="image-item" onclick="showFullscreenImage('image/image3.jpg', 'image3.jpg')">
+                                <div class="image-name">image3.jpg</div>
+                                <img src="image/image3.jpg" class="secret-image" alt="image3" onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<div style=\"color:#999;padding:20px;\">
+                            </div>
+                            <div class="image-item" onclick="showFullscreenImage('image/image4.jpg', 'image4.jpg')">
+                                <div class="image-name">image4.jpg</div>
+                                <img src="image/image4.jpg" class="secret-image" alt="image4" onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<div style=\"color:#999;padding:20px;\">
+                            </div>
+                            <div class="image-item" onclick="showFullscreenImage('image/image5.jpg', 'image5.jpg')">
+                                <div class="image-name">image5.jpg</div>
+                                <img src="image/image5.jpg" class="secret-image" alt="image5" onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<div style=\"color:#999;padding:20px;\">
+                            </div>
+                            <div class="image-item" onclick="showFullscreenImage('image/image1.jpg', 'image1.jpg')">
+                                <div class="image-name">image1.jpg</div>
+                                <img src="image/image1.jpg" class="secret-image" alt="image1" onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<div style=\"color:#999;padding:20px;\">
+                            </div>
+                            
+                            <div class="image-item" onclick="showFullscreenImage('image/image2.jpg', 'image2.jpg')">
+                                <div class="image-name">image2.jpg</div>
+                                <img src="image/image2.jpg" class="secret-image" alt="image2" onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<div style=\"color:#999;padding:20px;\">
+                            </div>
+                        </div>
+                        <!-- 推理结束按钮 -->
+                        <div style="text-align:center; margin-top: 30px;">
+                            <button onclick="startInference()" 
+                                    style="background: #cc0000; 
+                                        color: white; 
+                                        border: none; 
+                                        padding: 12px 30px; 
+                                        border-radius: 5px; 
+                                        font-size: 16px; 
+                                        font-weight: 500;
+                                        cursor: pointer;
+                                        transition: background 0.3s;">
+                                🕵️ 推理结束
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        // 启动推理
+        function startInference() {
+            window.open('answer.html', '_blank', 'width=1000,height=700');
+        }
+        
+        // 显示全屏图片
+        function showFullscreenImage(imageSrc, imageName) {
+            currentState = 'imageViewer';
+            galleryScreen.classList.remove('active-layer');
+            imageViewerScreen.classList.add('active-layer');
+            
+            imageViewerScreen.innerHTML = `
+                <div class="fullscreen-image-viewer">
+                    <div class="fullscreen-header">
+                        <div class="back-btn" onclick="backToGallery()">←</div>
+                        <div style="color:white;font-weight:500;">${imageName}</div>
+                        <div style="width:30px;"></div>
+                    </div>
+                    <div class="fullscreen-image-container">
+                        <img src="${imageSrc}" class="fullscreen-image" alt="${imageName}" onerror="this.onerror=null; this.src='';  this.parentElement.innerHTML='<div style=\"color:#999;text-align:center;\"></div>
+                    </div>
+                    <div class="image-info">${imageName}</div>
+                </div>
+            `;
+        }
+        
+        // 初始化
+        initPhone();
+    </script>
+</body>
+</html>
