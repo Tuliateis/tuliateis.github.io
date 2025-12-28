@@ -273,7 +273,7 @@
 <body>
     <div class="scan-line"></div>
     
-    <div class="game-progress">界面 0/30</div>
+    <div class="game-progress"></div>
     
     <h1 class="game-title">警局夜班执勤事件</h1>
     
@@ -360,13 +360,14 @@
                 if (progress < 100) {
                     progress += Math.random() * 20;
                     if (progress > 100) progress = 100;
-                    progressElement.textContent = `界面 0/30 | 加载中... ${Math.floor(progress)}%`;
+                    progressElement.textContent = ` ${Math.floor(progress)}%`;
                 } else {
                     clearInterval(loadInterval);
-                    progressElement.textContent = '界面 0/30 | 准备就绪';
+                    progressElement.textContent = ' ';
                 }
             }, 100);
         });
     </script>
 </body>
+
 </html>
