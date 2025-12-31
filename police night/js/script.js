@@ -330,7 +330,7 @@ function addEndButton() {
         // 添加按钮点击事件
         endButton.addEventListener('click', function() {
             // 跳转到prework.html
-            window.location.href = 'prework.html';
+            window.location.href = 'index.html';
         });
 
         // 将按钮添加到容器
@@ -423,4 +423,5 @@ style.textContent = `
         75% { transform: translateX(-1px); }
     }
 `;
+
 document.head.appendChild(style);
