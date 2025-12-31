@@ -329,7 +329,7 @@ function addEndButton() {
 
         // 添加按钮点击事件
         endButton.addEventListener('click', function() {
-            // 跳转到prework.html
+            // 跳转到index.html
             window.location.href = 'index.html';
         });
 
@@ -425,3 +425,4 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+
